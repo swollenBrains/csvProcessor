@@ -7,10 +7,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface CsvFieldSet {
+public @interface CsvField {
 	
-	public int startColumnIndex();
-	public int endColumnIndex();
-	public Class type();
+	public String name();
 
 }

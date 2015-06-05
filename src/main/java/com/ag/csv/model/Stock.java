@@ -2,18 +2,18 @@ package com.ag.csv.model;
 
 import com.ag.csv.CsvField;
 
-public class FixedHeaderStock {
+public class Stock {
 	
-	@CsvField(columnIndex=0)
+	@CsvField(name="id")
 	private String id;
 	
-	@CsvField(columnIndex=1)
+	@CsvField(name="sku")
 	private String sku;
 	
-	@CsvField(columnIndex=2)
+	@CsvField(name="date")
 	private String date;
 	
-	@CsvField(columnIndex=3)
+	@CsvField(name="quantity")
 	private String quantity;
 	
 	public String getId() {
