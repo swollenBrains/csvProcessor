@@ -1,27 +1,44 @@
 package com.ag.csv.model;
 
+import java.util.Map;
+
 import com.ag.csv.CsvField;
+import com.ag.csv.CsvFieldSet;
 
 public class Stock {
 	
-	@CsvField(name="id")
-	private String id;
+	@CsvField(columnIndex=0)
+	private String product;
 	
-	@CsvField(name="sku")
+	@CsvField(columnIndex=1)
+	private String family;
+	
+	@CsvField(columnIndex=2)
 	private String sku;
 	
-	@CsvField(name="date")
-	private String date;
-	
-	@CsvField(name="quantity")
-	private String quantity;
-	
-	public String getId() {
-		return id;
+	@CsvFieldSet(startColumnIndex=3, endColumnIndex=4, type=String.class)
+	private Map<String, String> dateQuantityMap;
+
+	public String getProduct() {
+		return product;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	@Override
+	public String toString() {
+		return "Stock [product=" + product + ", family=" + family + ", sku="
+				+ sku + ", dateQuantityMap=" + dateQuantityMap + "]";
+	}
+
+	public void setProduct(String product) {
+		this.product = product;
+	}
+
+	public String getFamily() {
+		return family;
+	}
+
+	public void setFamily(String family) {
+		this.family = family;
 	}
 
 	public String getSku() {
@@ -32,25 +49,12 @@ public class Stock {
 		this.sku = sku;
 	}
 
-	public String getDate() {
-		return date;
+	public Map<String, String> getDateQuantityMap() {
+		return dateQuantityMap;
 	}
 
-	public void setDate(String date) {
-		this.date = date;
+	public void setDateQuantityMap(Map<String, String> dateQuantityMap) {
+		this.dateQuantityMap = dateQuantityMap;
 	}
 
-	public String getQuantity() {
-		return quantity;
-	}
-
-	@Override
-	public String toString() {
-		return "Stock [id=" + id + ", sku=" + sku + ", date=" + date
-				+ ", quantity=" + quantity + "]";
-	}
-
-	public void setQuantity(String quantity) {
-		this.quantity = quantity;
-	}
 }

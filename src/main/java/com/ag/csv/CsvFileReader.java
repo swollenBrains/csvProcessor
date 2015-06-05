@@ -19,50 +19,79 @@ import org.apache.commons.csv.CSVRecord;
 public class CsvFileReader<T> {
 
 	private final Class<T> clazz;
-	private String[] headers;
-	private final Map<String, String> modelToCsvFieldNameMap = new HashMap<String, String>();
+	private final Map<String, CsvField> nameToFieldMap = new HashMap<String, CsvField>();
+	private final Map<String, CsvFieldSet> nameToFieldSetMap = new HashMap<String, CsvFieldSet>();
 	
 	public CsvFileReader(Class<T> clazz) {
 		super();
 		this.clazz = clazz;
 		initFieldNameMap();
+		initFieldSetNameMap();
 	}
 
 	public List<T> readCsvFile(InputStream inputStream) throws IOException, IllegalAccessException, InvocationTargetException{
 		List<T> models = new ArrayList<T>();
+		
 		try(Reader in = new InputStreamReader(inputStream);
-			CSVParser records = CSVFormat.EXCEL.withHeader(headers).parse(in)){
+			CSVParser records = CSVFormat.EXCEL.withAllowMissingColumnNames().parse(in)){
+			Map<Integer, String> indexToHeaderNameMap = new HashMap<Integer, String>();
 			boolean isHeader = true;
 			for (CSVRecord record : records) {
 				if(isHeader){
+					initIndexToHeaderNameMap(indexToHeaderNameMap, record, 5);
 					isHeader = false;
 					continue;
 				}
-				T model = createModel(record);
+				T model = createModel(indexToHeaderNameMap, record);
 				models.add(model);
 			}	
 		}
 		return models;
 	}
 
+	private void initIndexToHeaderNameMap(Map<Integer, String> indexToHeaderNameMap, CSVRecord record, int headerLength) {
+		for(int i=0; i< headerLength; i++) {
+			indexToHeaderNameMap.put(i, record.get(i));
+		}
+	}
+	
 	private void initFieldNameMap() {
-		List<String> headerList = new ArrayList<String>();
 		for(Field field:clazz.getDeclaredFields()){
 			CsvField csvField = field.getAnnotation(CsvField.class);
 			if(csvField != null){
-				modelToCsvFieldNameMap.put(field.getName(), csvField.name());
-				headerList.add(csvField.name());
+				nameToFieldMap.put(field.getName(), csvField);
 			}
 		}
-		headers = headerList.toArray(new String[headerList.size()]);
+	}
+
+	private void initFieldSetNameMap() {
+		for (Field field : clazz.getDeclaredFields()) {
+			CsvFieldSet csvFieldSet = field.getAnnotation(CsvFieldSet.class);
+			if (csvFieldSet != null) {
+				nameToFieldSetMap.put(field.getName(), csvFieldSet);
+			}
+		}
 	}
 	
-	private T createModel(CSVRecord record) throws IllegalAccessException,
+	private T createModel(Map<Integer, String> indexToHeaderNameMap, CSVRecord record) throws IllegalAccessException,
 			InvocationTargetException {
 		T model = newClassIntance();
-		for(String modelAttribute : modelToCsvFieldNameMap.keySet()){
-			String csvFieldName = modelToCsvFieldNameMap.get(modelAttribute);
-			BeanUtils.setProperty(model, modelAttribute, record.get(csvFieldName));
+		for (String modelAttribute : nameToFieldMap.keySet()) {
+			Integer index = nameToFieldMap.get(modelAttribute).columnIndex();
+			BeanUtils.setProperty(model, modelAttribute, record.get(index));
+		}
+		for (String modelAttribute : nameToFieldSetMap.keySet()) {
+			CsvFieldSet csvFieldSet = nameToFieldSetMap.get(modelAttribute);
+			Integer startColumnIndex = csvFieldSet.startColumnIndex();
+			Integer endColumnIndex = csvFieldSet.endColumnIndex();
+			Class type = csvFieldSet.type();
+//			type.getClass()
+			Map<String, String> fieldSetMap = new HashMap<String, String>();
+			for (int index = startColumnIndex; index <= endColumnIndex; index++) {
+				fieldSetMap.put(indexToHeaderNameMap.get(index),
+						record.get(index));
+			}
+			BeanUtils.setProperty(model, modelAttribute, fieldSetMap);
 		}
 		return model;
 	}
