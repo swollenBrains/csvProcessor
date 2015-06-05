@@ -1,4 +1,4 @@
-package com.ag.csv;
+package com.sb.csv.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,8 +7,10 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface CsvField {
+public @interface CsvFieldSet {
 	
-	public int columnIndex();
+	public int startColumnIndex();
+	public int endColumnIndex();
+	public Class type();
 
 }

@@ -1,4 +1,6 @@
-package com.ag.csv;
+package com.sb.csv;
+
+import com.sb.csv.annotations.CsvField;
 
 public class CsvFieldDetails {
 	

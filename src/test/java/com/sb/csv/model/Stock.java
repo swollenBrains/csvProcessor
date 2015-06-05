@@ -1,9 +1,9 @@
-package com.ag.csv.model;
+package com.sb.csv.model;
 
 import java.util.Map;
 
-import com.ag.csv.CsvField;
-import com.ag.csv.CsvFieldSet;
+import com.sb.csv.annotations.CsvField;
+import com.sb.csv.annotations.CsvFieldSet;
 
 public class Stock {
 	

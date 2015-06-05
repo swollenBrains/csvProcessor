@@ -1,4 +1,4 @@
-package com.ag.csv;
+package com.sb.csv.reader;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,10 +16,14 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
+import com.sb.csv.CsvFieldDetails;
+import com.sb.csv.annotations.CsvField;
+import com.sb.csv.annotations.CsvFieldSet;
+
 public class CsvFileReader<T> {
 
 	private final Class<T> clazz;
-	private final Map<String, CsvField> nameToFieldMap = new HashMap<String, CsvField>();
+	private final Map<String, CsvFieldDetails> nameToFieldMap = new HashMap<String, CsvFieldDetails>();
 	private final Map<String, CsvFieldSet> nameToFieldSetMap = new HashMap<String, CsvFieldSet>();
 	
 	public CsvFileReader(Class<T> clazz) {
@@ -59,7 +63,8 @@ public class CsvFileReader<T> {
 		for(Field field:clazz.getDeclaredFields()){
 			CsvField csvField = field.getAnnotation(CsvField.class);
 			if(csvField != null){
-				nameToFieldMap.put(field.getName(), csvField);
+				CsvFieldDetails csvFieldDetails = new CsvFieldDetails(csvField, field.getType());
+				nameToFieldMap.put(field.getName(), csvFieldDetails);
 			}
 		}
 	}
@@ -77,7 +82,7 @@ public class CsvFileReader<T> {
 			InvocationTargetException {
 		T model = newClassIntance();
 		for (String modelAttribute : nameToFieldMap.keySet()) {
-			Integer index = nameToFieldMap.get(modelAttribute).columnIndex();
+			Integer index = nameToFieldMap.get(modelAttribute).getCsvField().columnIndex();
 			BeanUtils.setProperty(model, modelAttribute, record.get(index));
 		}
 		for (String modelAttribute : nameToFieldSetMap.keySet()) {

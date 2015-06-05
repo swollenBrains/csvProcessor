@@ -1,6 +1,6 @@
-package com.ag.csv.model;
+package com.sb.csv.model;
 
-import com.ag.csv.CsvField;
+import com.sb.csv.annotations.CsvField;
 
 public class FixedHeaderStock {
 	

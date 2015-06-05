@@ -1,4 +1,4 @@
-package com.ag.csv;
+package com.sb.csv;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,8 +8,9 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.ag.csv.model.FixedHeaderStock;
-import com.ag.csv.model.Stock;
+import com.sb.csv.model.FixedHeaderStock;
+import com.sb.csv.model.Stock;
+import com.sb.csv.reader.CsvFileReader;
 
 public class CsvFileReaderTest {
 	
