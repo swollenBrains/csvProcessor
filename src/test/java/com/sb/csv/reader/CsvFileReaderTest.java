@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.sb.csv.model.FixedHeaderStock;
+import com.sb.csv.model.ModelWithIdAsInteger;
 import com.sb.csv.model.Stock;
 import com.sb.csv.model.StockWithUnsupportedType;
 import com.sb.csv.reader.CsvFileReader;
@@ -19,12 +20,12 @@ public class CsvFileReaderTest {
 	@Test
 	public void shouldReadCsvForStock() throws IllegalAccessException, InvocationTargetException, IOException, CsvReaderException{
 		CsvFileReader<FixedHeaderStock> stockReader = new CsvFileReader<FixedHeaderStock>(FixedHeaderStock.class);
-		try(InputStream csvInput = getClass().getResourceAsStream("dataWithAddedColumn.csv")) {
+		try(InputStream csvInput = getClass().getResourceAsStream("FixedHeaderStockData.csv")) {
 			List<FixedHeaderStock> stocks = stockReader.readCsvIntoList(csvInput);
 //			for(Stock stock: stocks){
 //				System.out.println(stock.toString());
 //			}
-			Assert.assertEquals(200, stocks.size());
+			Assert.assertEquals(10, stocks.size());
 		} 
 	}
 
@@ -50,6 +51,18 @@ public class CsvFileReaderTest {
 			stockReader.readCsvIntoList(csvInput);
 		}
 		Assert.fail();
+	}
+	
+	@Test
+	public void shouldParseCsvFieldsIntoInteger() throws IllegalAccessException, InvocationTargetException, IOException, CsvReaderException{
+		CsvFileReader<ModelWithIdAsInteger> stockReader = new CsvFileReader<ModelWithIdAsInteger>(ModelWithIdAsInteger.class);
+		try(InputStream csvInput = getClass().getResourceAsStream("FixedHeaderStockData.csv")) {
+			List<ModelWithIdAsInteger> stocks = stockReader.readCsvIntoList(csvInput);
+//			for(Stock stock: stocks){
+//				System.out.println(stock.toString());
+//			}
+			Assert.assertEquals(10, stocks.size());
+		} 
 	}
 	
 }

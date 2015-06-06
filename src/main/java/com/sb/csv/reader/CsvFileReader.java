@@ -19,6 +19,7 @@ import org.apache.commons.csv.CSVRecord;
 import com.sb.csv.CsvFieldDetails;
 import com.sb.csv.annotations.CsvField;
 import com.sb.csv.annotations.CsvFieldSet;
+import com.sb.csv.processor.TypeProcessor;
 import com.sb.csv.processor.TypeProcessorFactory;
 import com.sb.csv.processor.exception.CsvProcessorException;
 import com.sb.csv.reader.exception.CsvReaderException;
@@ -54,7 +55,7 @@ public class CsvFileReader<T> {
 			boolean isHeader = true;
 			for (CSVRecord record : records) {
 				if(isHeader){
-					initIndexToHeaderNameMap(indexToHeaderNameMap, record, 5);
+					initIndexToHeaderNameMap(indexToHeaderNameMap, record);
 					isHeader = false;
 					continue;
 				}
@@ -78,7 +79,8 @@ public class CsvFileReader<T> {
 		return models;
 	}
 
-	private void initIndexToHeaderNameMap(Map<Integer, String> indexToHeaderNameMap, CSVRecord record, int headerLength) {
+	private void initIndexToHeaderNameMap(Map<Integer, String> indexToHeaderNameMap, CSVRecord record) {
+		int headerLength = record.size();
 		for(int i=0; i< headerLength; i++) {
 			indexToHeaderNameMap.put(i, record.get(i));
 		}
@@ -103,14 +105,6 @@ public class CsvFileReader<T> {
 		}
 	}
 	
-//	private T createModel(Map<Integer, String> indexToHeaderNameMap, CSVRecord record) throws IllegalAccessException,
-//			InvocationTargetException {
-//		T model = newClassIntance();
-//		setCsvFields(model, record);
-//		setCsvFieldSets(indexToHeaderNameMap, record, model);
-//		return model;
-//	}
-
 	private void setCsvFieldSets(Map<Integer, String> indexToHeaderNameMap,
 			CSVRecord record, T model) throws IllegalAccessException,
 			InvocationTargetException {
@@ -132,6 +126,7 @@ public class CsvFileReader<T> {
 	 * Sets the attributes annotated with {@link CsvField} into the model
 	 * @param model
 	 * @param record
+	 * @return List of {@link CsvProcessorException}
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
@@ -141,8 +136,8 @@ public class CsvFileReader<T> {
 			try{
 				CsvFieldDetails csvFieldDetails = nameToFieldMap.get(modelAttribute);
 				Integer index = csvFieldDetails.getCsvField().columnIndex();
-				TypeProcessorFactory.getTypeProcessor(csvFieldDetails.getTypeInModel());
-				BeanUtils.setProperty(model, modelAttribute, record.get(index));
+				TypeProcessor processor = TypeProcessorFactory.getTypeProcessor(csvFieldDetails.getTypeInModel());
+				BeanUtils.setProperty(model, modelAttribute, processor.makeObject(record.get(index)));
 			} catch(CsvProcessorException e) {
 				exceptions.add(e);
 			}
