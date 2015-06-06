@@ -3,7 +3,7 @@ package com.sb.csv.processor.exception;
 public class UnsupportedTypeException extends CsvProcessorException {
 	
 	private static final long serialVersionUID = 1L;
-	private Class<?> clazz;
+	private final Class<?> clazz;
 	
 	public UnsupportedTypeException(Class<?> clazz){
 		super("Unsupported type : "+clazz.getCanonicalName());

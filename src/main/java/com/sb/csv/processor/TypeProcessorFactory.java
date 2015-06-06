@@ -1,5 +1,7 @@
 package com.sb.csv.processor;
 
+import java.util.Date;
+
 import com.sb.csv.processor.exception.UnsupportedTypeException;
 
 public class TypeProcessorFactory {
@@ -10,6 +12,9 @@ public class TypeProcessorFactory {
 		}
 		if(String.class.getCanonicalName().equals(clazz.getCanonicalName())) {
 			return new StringProcessor();
+		}
+		if(Date.class.getCanonicalName().equals(clazz.getCanonicalName())) {
+			return new DateProcessor();
 		}
 		throw new UnsupportedTypeException(clazz);
 	}

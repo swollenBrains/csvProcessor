@@ -24,13 +24,13 @@ import com.sb.csv.processor.TypeProcessorFactory;
 import com.sb.csv.processor.exception.CsvProcessorException;
 import com.sb.csv.reader.exception.CsvReaderException;
 
-public class CsvFileReader<T> {
+public class CsvReader<T> {
 
 	private final Class<T> clazz;
 	private final Map<String, CsvFieldDetails> nameToFieldMap = new HashMap<String, CsvFieldDetails>();
 	private final Map<String, CsvFieldSet> nameToFieldSetMap = new HashMap<String, CsvFieldSet>();
 	
-	public CsvFileReader(Class<T> clazz) {
+	public CsvReader(Class<T> clazz) {
 		super();
 		this.clazz = clazz;
 		initFieldNameMap();
@@ -115,11 +115,13 @@ public class CsvFileReader<T> {
 				Integer startColumnIndex = csvFieldSet.startColumnIndex();
 				Integer endColumnIndex = csvFieldSet.endColumnIndex();
 				Class<?> valueType = csvFieldSet.valueType();
-				TypeProcessor processor = TypeProcessorFactory.getTypeProcessor(valueType);
-				Map<String, Object> fieldSetMap = new HashMap<String, Object>();
+				
+				TypeProcessor keyProcessor = TypeProcessorFactory.getTypeProcessor(csvFieldSet.keyType());
+				TypeProcessor valueProcessor = TypeProcessorFactory.getTypeProcessor(valueType);
+				Map<Object, Object> fieldSetMap = new HashMap<Object, Object>();
 				for (int index = startColumnIndex; index <= endColumnIndex; index++) {
-					fieldSetMap.put(indexToHeaderNameMap.get(index),
-							processor.makeObject(record.get(index)));
+					fieldSetMap.put(keyProcessor.makeObject(indexToHeaderNameMap.get(index)),
+							valueProcessor.makeObject(record.get(index)));
 				}
 				BeanUtils.setProperty(model, modelAttribute, fieldSetMap);
 			} catch(CsvProcessorException e){

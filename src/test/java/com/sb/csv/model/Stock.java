@@ -16,7 +16,7 @@ public class Stock {
 	@CsvField(columnIndex=2)
 	private String sku;
 	
-	@CsvFieldSet(startColumnIndex=3, endColumnIndex=4, valueType=String.class)
+	@CsvFieldSet(startColumnIndex=3, endColumnIndex=4, valueType=String.class, keyType=String.class)
 	private Map<String, String> dateQuantityMap;
 
 	public String getProduct() {

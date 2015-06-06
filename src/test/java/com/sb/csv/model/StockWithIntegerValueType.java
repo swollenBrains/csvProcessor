@@ -5,7 +5,7 @@ import java.util.Map;
 import com.sb.csv.annotations.CsvField;
 import com.sb.csv.annotations.CsvFieldSet;
 
-public class StockWithIntegerCsvFieldSet {
+public class StockWithIntegerValueType {
 	
 	@CsvField(columnIndex=0)
 	private String product;
@@ -16,7 +16,7 @@ public class StockWithIntegerCsvFieldSet {
 	@CsvField(columnIndex=2)
 	private String sku;
 	
-	@CsvFieldSet(startColumnIndex=3, endColumnIndex=4, valueType=Integer.class)
+	@CsvFieldSet(startColumnIndex=3, endColumnIndex=4, valueType=Integer.class, keyType= String.class)
 	private Map<String, Integer> dateQuantityMap;
 
 	public String getProduct() {
