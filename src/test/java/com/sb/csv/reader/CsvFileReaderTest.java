@@ -9,8 +9,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.sb.csv.model.FixedHeaderStock;
-import com.sb.csv.model.ModelWithIdAsInteger;
+import com.sb.csv.model.ModelWithIntegerCsvField;
 import com.sb.csv.model.Stock;
+import com.sb.csv.model.StockWithIntegerCsvFieldSet;
 import com.sb.csv.model.StockWithUnsupportedType;
 import com.sb.csv.reader.CsvFileReader;
 import com.sb.csv.reader.exception.CsvReaderException;
@@ -55,13 +56,27 @@ public class CsvFileReaderTest {
 	
 	@Test
 	public void shouldParseCsvFieldsIntoInteger() throws IllegalAccessException, InvocationTargetException, IOException, CsvReaderException{
-		CsvFileReader<ModelWithIdAsInteger> stockReader = new CsvFileReader<ModelWithIdAsInteger>(ModelWithIdAsInteger.class);
+		CsvFileReader<ModelWithIntegerCsvField> stockReader = new CsvFileReader<ModelWithIntegerCsvField>(ModelWithIntegerCsvField.class);
 		try(InputStream csvInput = getClass().getResourceAsStream("FixedHeaderStockData.csv")) {
-			List<ModelWithIdAsInteger> stocks = stockReader.readCsvIntoList(csvInput);
+			List<ModelWithIntegerCsvField> stocks = stockReader.readCsvIntoList(csvInput);
 //			for(Stock stock: stocks){
 //				System.out.println(stock.toString());
 //			}
 			Assert.assertEquals(10, stocks.size());
+		} 
+	}
+	
+	@Test
+	public void shouldParseCsvFieldSetWithValueTypeInteger() throws IOException, IllegalAccessException, InvocationTargetException {
+		CsvFileReader<StockWithIntegerCsvFieldSet> stockReader = new CsvFileReader<StockWithIntegerCsvFieldSet>(StockWithIntegerCsvFieldSet.class);
+		try(InputStream csvInput = getClass().getResourceAsStream("StockData.csv")) {
+			List<StockWithIntegerCsvFieldSet> stocks = stockReader.readCsvIntoList(csvInput);
+//			for(StockWithIntegerCsvFieldSet stock: stocks){
+//				System.out.println(stock.toString());
+//			}
+			Assert.assertEquals(200, stocks.size());
+		} catch (CsvReaderException e) {
+			Assert.fail();
 		} 
 	}
 	

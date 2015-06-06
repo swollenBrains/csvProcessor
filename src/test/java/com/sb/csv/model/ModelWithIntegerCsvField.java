@@ -2,7 +2,7 @@ package com.sb.csv.model;
 
 import com.sb.csv.annotations.CsvField;
 
-public class ModelWithIdAsInteger {
+public class ModelWithIntegerCsvField {
 	
 	@CsvField(columnIndex=0)
 	private Integer id;

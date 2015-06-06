@@ -7,6 +7,7 @@ import com.sb.csv.processor.exception.CsvProcessorException;
 
 public class CsvReaderException extends Exception {
 	
+	private static final long serialVersionUID = 1L;
 	private final List<CsvProcessorException> exceptions = new ArrayList<CsvProcessorException>();
 	
 	public List<CsvProcessorException> getExceptions() {

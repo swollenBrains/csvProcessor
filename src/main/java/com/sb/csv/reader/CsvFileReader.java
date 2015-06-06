@@ -63,7 +63,7 @@ public class CsvFileReader<T> {
 				List<CsvProcessorException> exceptionsInRecord = new ArrayList<CsvProcessorException>();
 
 				exceptionsInRecord.addAll(setCsvFields(model, record));
-				setCsvFieldSets(indexToHeaderNameMap, record, model);
+				exceptionsInRecord.addAll(setCsvFieldSets(indexToHeaderNameMap, record, model));
 				if(exceptionsInRecord.size()>0){
 					exceptionsInStream.addAll(exceptionsInRecord);
 					continue;
@@ -79,10 +79,10 @@ public class CsvFileReader<T> {
 		return models;
 	}
 
-	private void initIndexToHeaderNameMap(Map<Integer, String> indexToHeaderNameMap, CSVRecord record) {
-		int headerLength = record.size();
+	private void initIndexToHeaderNameMap(Map<Integer, String> indexToHeaderNameMap, CSVRecord headerRecord) {
+		int headerLength = headerRecord.size();
 		for(int i=0; i< headerLength; i++) {
-			indexToHeaderNameMap.put(i, record.get(i));
+			indexToHeaderNameMap.put(i, headerRecord.get(i));
 		}
 	}
 	
@@ -105,21 +105,28 @@ public class CsvFileReader<T> {
 		}
 	}
 	
-	private void setCsvFieldSets(Map<Integer, String> indexToHeaderNameMap,
+	private List<CsvProcessorException> setCsvFieldSets(Map<Integer, String> indexToHeaderNameMap,
 			CSVRecord record, T model) throws IllegalAccessException,
 			InvocationTargetException {
+		List<CsvProcessorException> exceptions = new ArrayList<CsvProcessorException>();
 		for (String modelAttribute : nameToFieldSetMap.keySet()) {
-			CsvFieldSet csvFieldSet = nameToFieldSetMap.get(modelAttribute);
-			Integer startColumnIndex = csvFieldSet.startColumnIndex();
-			Integer endColumnIndex = csvFieldSet.endColumnIndex();
-			Class type = csvFieldSet.type();
-			Map<String, String> fieldSetMap = new HashMap<String, String>();
-			for (int index = startColumnIndex; index <= endColumnIndex; index++) {
-				fieldSetMap.put(indexToHeaderNameMap.get(index),
-						record.get(index));
+			try{
+				CsvFieldSet csvFieldSet = nameToFieldSetMap.get(modelAttribute);
+				Integer startColumnIndex = csvFieldSet.startColumnIndex();
+				Integer endColumnIndex = csvFieldSet.endColumnIndex();
+				Class<?> valueType = csvFieldSet.valueType();
+				TypeProcessor processor = TypeProcessorFactory.getTypeProcessor(valueType);
+				Map<String, Object> fieldSetMap = new HashMap<String, Object>();
+				for (int index = startColumnIndex; index <= endColumnIndex; index++) {
+					fieldSetMap.put(indexToHeaderNameMap.get(index),
+							processor.makeObject(record.get(index)));
+				}
+				BeanUtils.setProperty(model, modelAttribute, fieldSetMap);
+			} catch(CsvProcessorException e){
+				exceptions.add(e);
 			}
-			BeanUtils.setProperty(model, modelAttribute, fieldSetMap);
 		}
+		return exceptions;
 	}
 	
 	/**

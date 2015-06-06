@@ -11,6 +11,6 @@ public @interface CsvFieldSet {
 	
 	public int startColumnIndex();
 	public int endColumnIndex();
-	public Class type();
+	public Class<?> valueType();
 
 }

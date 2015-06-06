@@ -5,12 +5,7 @@ import java.util.Map;
 import com.sb.csv.annotations.CsvField;
 import com.sb.csv.annotations.CsvFieldSet;
 
-/**
- * StockWithUnsupportedType has sku declared as Stock which is a unsupported type
- * @author ankitgupta7
- *
- */
-public class StockWithUnsupportedType {
+public class StockWithIntegerCsvFieldSet {
 	
 	@CsvField(columnIndex=0)
 	private String product;
@@ -19,10 +14,10 @@ public class StockWithUnsupportedType {
 	private String family;
 	
 	@CsvField(columnIndex=2)
-	private Stock sku;
+	private String sku;
 	
-	@CsvFieldSet(startColumnIndex=3, endColumnIndex=4, valueType=String.class)
-	private Map<String, String> dateQuantityMap;
+	@CsvFieldSet(startColumnIndex=3, endColumnIndex=4, valueType=Integer.class)
+	private Map<String, Integer> dateQuantityMap;
 
 	public String getProduct() {
 		return product;
@@ -46,19 +41,19 @@ public class StockWithUnsupportedType {
 		this.family = family;
 	}
 
-	public Stock getSku() {
+	public String getSku() {
 		return sku;
 	}
 
-	public void setSku(Stock sku) {
+	public void setSku(String sku) {
 		this.sku = sku;
 	}
 
-	public Map<String, String> getDateQuantityMap() {
+	public Map<String, Integer> getDateQuantityMap() {
 		return dateQuantityMap;
 	}
 
-	public void setDateQuantityMap(Map<String, String> dateQuantityMap) {
+	public void setDateQuantityMap(Map<String, Integer> dateQuantityMap) {
 		this.dateQuantityMap = dateQuantityMap;
 	}
 

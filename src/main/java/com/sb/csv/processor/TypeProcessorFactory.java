@@ -4,7 +4,7 @@ import com.sb.csv.processor.exception.UnsupportedTypeException;
 
 public class TypeProcessorFactory {
 
-	public static TypeProcessor getTypeProcessor(Class clazz) throws UnsupportedTypeException{
+	public static TypeProcessor getTypeProcessor(Class<?> clazz) throws UnsupportedTypeException{
 		if(Integer.class.getCanonicalName().equalsIgnoreCase(clazz.getCanonicalName())){
 			return new IntegerProcessor();
 		}
