@@ -5,16 +5,16 @@ import java.util.Date;
 import com.sb.csv.processor.exception.UnsupportedTypeException;
 
 public class TypeProcessorFactory {
-
+	
 	public static TypeProcessor getTypeProcessor(Class<?> clazz) throws UnsupportedTypeException{
 		if(Integer.class.getCanonicalName().equalsIgnoreCase(clazz.getCanonicalName())){
-			return new IntegerProcessor();
+			return IntegerProcessor.getInstance();
 		}
 		if(String.class.getCanonicalName().equals(clazz.getCanonicalName())) {
-			return new StringProcessor();
+			return StringProcessor.getInstance();
 		}
 		if(Date.class.getCanonicalName().equals(clazz.getCanonicalName())) {
-			return new DateProcessor();
+			return DateProcessor.getInstance();
 		}
 		throw new UnsupportedTypeException(clazz);
 	}

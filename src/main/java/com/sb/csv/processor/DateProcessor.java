@@ -7,6 +7,14 @@ import com.sb.csv.processor.exception.TypeProcessingException;
 
 public class DateProcessor implements TypeProcessor {
 
+	private static DateProcessor instance = new DateProcessor();
+	
+	public static DateProcessor getInstance(){
+		return instance;
+	}
+	
+	private DateProcessor() {}
+	
 	@Override
 	public Object makeObject(String value) throws TypeProcessingException {
 		try {
